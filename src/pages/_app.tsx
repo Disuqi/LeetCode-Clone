@@ -5,14 +5,12 @@ import { RecoilRoot } from 'recoil'
 
 export default function App({ Component, pageProps }: AppProps) {
   return <>
-  <RecoilRoot>
     <Head>
-      <title>SHUSH</title>
+      <title>Tutorial</title>
       <meta name="viewport" content='width=device-width, initial-scale=1'/>
       <link rel="icon" href="/favicon.ico" />
-      <meta name="description" content="SHUSH is a social media platform for sharing your thoughts and ideas with the world."/>
+      <meta name="description" content="Tutorial is a tutorial"/>
     </Head>
     <Component {...pageProps} />
-  </RecoilRoot>
   </>
 }
