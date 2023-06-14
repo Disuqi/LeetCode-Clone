@@ -1,9 +1,14 @@
+import { AuthModalType, authModalState } from "@/atoms/authModalAtom";
 import React from "react";
+import { useSetRecoilState } from "recoil";
+import { UpdateAuthModal } from "./AuthModal";
 
 type SigninModalProps = {};
 
 export default function SignInModal({}: SigninModalProps) 
 {
+	const toPassword = UpdateAuthModal(AuthModalType.ResetPassword);
+	const toSignUp = UpdateAuthModal(AuthModalType.SignUp);
     return (
 		<form className='space-y-6 px-6 pb-4'>
 			<div className="flex justify-center items-center w-full">
@@ -25,14 +30,16 @@ export default function SignInModal({}: SigninModalProps)
 							hover:border-indigo-500 hover:bg-white hover:text-indigo-500 transition duration-200'>
 				Sign in
 			</button>
-			<button className='w-full text-gray-400 text-sm outline-none focus:text-blue-500 hover:underline text-right focus:underline'>
+			<button className='w-full text-gray-400 text-sm outline-none focus:text-blue-500 hover:underline text-right focus:underline'
+			onClick={toPassword}>
 					Forgot Password?
 			</button>
 			<div className='text-sm font-medium text-black text-right'>
 				Not Registered?{" "}
-				<a href='#' className='text-indigo-500 hover:underline outline-none focus:text-blue-500 focus:underline'>
+				<button className='text-indigo-500 hover:underline outline-none focus:text-blue-500 focus:underline'
+					onClick={toSignUp}>
 					Create account
-				</a>
+				</button>
 			</div>
 		</form>
     );
