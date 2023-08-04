@@ -1,5 +1,4 @@
 import React, { use, useEffect } from "react";
-import { IoClose } from "react-icons/io5";
 import SignInModal from "./SignIn";
 import SignUpModal from "./SignUp";
 import ResetPassModal from "./ResetPassword";
@@ -8,6 +7,12 @@ import { authModalState } from "@/atoms/authModalAtom";
 import { AuthModalType } from "@/atoms/authModalAtom";
 
 type AuthModalProps = {};
+export enum FieldType
+{
+	Username,
+	Email,
+	Password,
+}
 
 export default function AuthModal({}: AuthModalProps) 
 {

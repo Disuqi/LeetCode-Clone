@@ -1,7 +1,11 @@
 import { AuthModalType, authModalState } from "@/atoms/authModalAtom";
 import React from "react";
+import { FieldType, UpdateAuthModal } from "./AuthModal";
+import { onlineUserManager } from "@/firebase/firebase";
 import { useSetRecoilState } from "recoil";
-import { UpdateAuthModal } from "./AuthModal";
+import { IsSignedIn } from "@/atoms/SigningAtom";
+import { AuthStatus } from "@/firebase/firebase";
+import { AiFillRead } from "react-icons/ai";
 
 type SigninModalProps = {};
 
@@ -9,20 +13,68 @@ export default function SignInModal({}: SigninModalProps)
 {
 	const toPassword = UpdateAuthModal(AuthModalType.ResetPassword);
 	const toSignUp = UpdateAuthModal(AuthModalType.SignUp);
+	const setIsSignedIn = useSetRecoilState(IsSignedIn);
+	const setAuthModal = useSetRecoilState(authModalState);
+
+	const [userData, setUserData] = React.useState({email: '', password: ''});
+
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, type: FieldType) =>
+	{
+		switch(type){
+			case FieldType.Email:
+				setUserData({...userData, email: e.target.value});
+				break;
+			case FieldType.Password:
+				setUserData({...userData, password: e.target.value});
+				break;
+		}
+	};
+	const signIn = async (e : React.FormEvent<HTMLFormElement>) => 
+	{
+		e.preventDefault();
+		var result = await onlineUserManager.SignIn(userData.email, userData.password);
+		if(result.Status == 0)
+		{
+			setIsSignedIn(true);
+			setAuthModal({isOpen: false, type: AuthModalType.SignIn});
+			alert("Sign in successfully!");
+		}else
+		{
+			switch(result.Status)
+			{
+				case AuthStatus.InvalidEmail:
+				case AuthStatus.WrongPassword:
+					alert("Invalid email or password!");
+					break;
+				case AuthStatus.UserNotFound:
+					setAuthModal((prev) => ({...prev, type: AuthModalType.SignUp}));
+					alert("User not found! Please sign up!");
+					break;
+				case AuthStatus.UserDisabled:
+					alert("User is disabled!");
+					break;
+				case AuthStatus.UnknownError:
+					alert("Unknown error!");
+					break;
+			}
+		}
+	};
     return (
-		<form className='space-y-6 px-6 pb-4'>
+		<form className='space-y-6 px-6 pb-4' onSubmit={signIn}>
 			<div className="flex justify-center items-center w-full">
 				<h3 className='text-2xl font-black text-indigo-500'>LOGO</h3>
 			</div>
 			<div>
 				<label htmlFor='email' className='font-medium block mb-2 text-black'>Your Email</label>
 				<input type='email' name='email' id='email' placeholder='name@company.com'
-						className='p-2.5 rounded-lg outline-none border border-gray-300 focus:ring-blue-500 focus:border-blue-500'/>
+						className='p-2.5 rounded-lg outline-none border border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+						onChange={(e) => {handleInputChange(e, FieldType.Email)}}/>
 			</div>
 			<div>
 				<label htmlFor='password' className='font-medium block mb-2 text-black'>Your Password</label>
 				<input type='password' name='password' id='password' placeholder="password"
-				className='p-2.5 rounded-lg outline-none border border-gray-300 focus:ring-blue-500 focus:border-blue-500'/>
+				className='p-2.5 rounded-lg outline-none border border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+				onChange={(e) => {handleInputChange(e, FieldType.Password)}}/>
 			</div>
 			<button type='submit' 
 					className='w-full text-white font-medium rounded-lg

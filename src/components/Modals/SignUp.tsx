@@ -1,19 +1,11 @@
-import { AuthModalType, authModalState } from "@/atoms/authModalAtom";
+import { AuthModalType } from "@/atoms/authModalAtom";
 import React, { use } from "react";
-import { useSetRecoilState } from "recoil";
-import { UpdateAuthModal } from "./AuthModal";
+import { FieldType, UpdateAuthModal } from "./AuthModal";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/firebase";
 import { useRouter } from "next/router";
 
 type SingUpProps = {};
-
-enum FieldType
-{
-	Username,
-	Email,
-	Password,
-}
 
 export default function SignUpModal({}: SingUpProps) 
 {
@@ -39,6 +31,7 @@ export default function SignUpModal({}: SingUpProps)
 	const registerUser = async (e: React.FormEvent<HTMLFormElement>) =>
 	{
 		e.preventDefault();
+
 		try
 		{
 			const user = await createUser(userInfo.email, userInfo.password);
@@ -47,7 +40,7 @@ export default function SignUpModal({}: SingUpProps)
 		} 
 		catch(error:any)
 		{
-			console.log(error.message);
+			alert(error.message)
 		}
 		
 	}
